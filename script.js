@@ -16,7 +16,7 @@ document.querySelector("header").appendChild(menuBtn);
 
 // Show/hide menu on small screens
 function handleResize() {
-  if (window.innerWidth <= 768) {
+  if (window.innerWidth <= 800) {
     menuBtn.style.display = "block";
     nav.style.display = "none";
   } else {
