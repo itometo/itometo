@@ -1,168 +1,237 @@
-/* Base */
+/* Base: Sci-Fi Core */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: Georgia, serif;
-  background: #fff;
-  color: #111;
-  line-height: 1.6;
+/* Primary Color Palette */
+:root {
+  /* Sci-Fi Default (Dark Mode is the primary style) */
+  --bg-color: #0d1117; /* Very Dark Space/Code Background */
+  --text-color: #c9d1d9; /* Light Grey Text */
+  --accent-color: #00ff7f; /* Neon Green/Cyan (Primary Glow) */
+  --secondary-color: #4a4f56; /* Subtle Border/Separator Grey */
+  --mono-font: 'Inconsolata', 'Courier New', monospace;
+  --serif-font: Georgia, serif;
 }
 
-/* Header */
+/* Light/Classic Mode for accessibility (Optional, but kept the structure) */
+body.light {
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --accent-color: #0077cc;
+  --secondary-color: #ddd;
+}
+
+/* Default Body Style (Starts Dark) */
+body {
+  font-family: var(--mono-font); /* Monospace for Digital Look */
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  transition: background-color 0.4s ease, color 0.4s ease; /* Smooth toggle */
+}
+
+/* Sci-Fi Text Enhancements */
+h1, h2, h3, header .logo {
+  font-family: var(--serif-font); /* Contrast with the monospace body */
+  letter-spacing: 0.1em; /* Digital separation */
+  color: var(--accent-color); /* Highlight with the neon color */
+  text-shadow: 0 0 5px rgba(0, 255, 127, 0.5); /* Subtle glow effect */
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--text-color); /* Invert color on hover for feedback */
+}
+
+/* Header: Sleek Console Bar */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #ddd;
+  padding: 1.2rem 2rem;
+  /* Use a subtle box shadow instead of a harsh border for depth */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  background: #161b22; /* Slightly different dark shade */
+  border-bottom: 2px solid var(--accent-color); /* Strong accent line */
 }
 
 header .logo {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.2rem;
+  font-weight: normal; /* Less bold, more refined */
 }
 
 header nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 header nav a {
   text-decoration: none;
-  color: #111;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
+  color: var(--text-color);
+  font-family: var(--mono-font);
+  font-weight: normal;
+  transition: color 0.3s;
 }
 
 header nav a:hover {
-  text-decoration: underline;
+  color: var(--accent-color); /* Highlight on hover */
+  text-shadow: 0 0 3px var(--accent-color);
 }
 
+/* Dark Mode Toggle Button */
 #dark-mode {
-  background: #222;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  border: 1px solid var(--accent-color);
+  padding: 8px 16px;
+  border-radius: 2px; /* Sharp edges */
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.3s;
+  font-size: 0.8rem;
+  font-family: var(--mono-font);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
 #dark-mode:hover {
-  background: #0077cc;
+  background: var(--accent-color);
+  color: #111;
+  border-color: #111;
 }
 
 /* Container */
 .container {
-  max-width: 1100px;
-  margin: 2rem auto;
+  max-width: 1000px;
+  margin: 3rem auto;
   padding: 0 1rem;
 }
 
-/* Featured Article */
+/* Featured Article: Terminal Window Style */
+.featured {
+  padding: 2rem;
+  border: 1px solid var(--secondary-color);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4); /* Semi-transparent panel */
+}
+
 .featured img {
   width: 100%;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  /* Image subtle border and desaturation */
+  border: 1px solid var(--accent-color);
+  filter: grayscale(20%);
 }
 
 .featured h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .featured p {
-  font-family: Arial, sans-serif;
-  color: #444;
-  margin-bottom: 0.5rem;
+  font-family: var(--mono-font);
+  color: var(--text-color); /* Use main text color */
+  margin-bottom: 0.75rem;
 }
 
-.featured a {
-  color: #0077cc;
-  text-decoration: none;
-}
-
-.featured a:hover {
-  text-decoration: underline;
-}
-
-/* Articles Grid */
+/* Articles Grid: Data Blocks */
 .articles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
+}
+
+.article-card {
+  padding: 1rem;
+  border: 1px solid var(--secondary-color);
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.article-card:hover {
+  border-color: var(--accent-color);
+  background: rgba(0, 255, 127, 0.1);
 }
 
 .articles img {
   width: 100%;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
+  border-radius: 2px;
+  margin-bottom: 0.75rem;
 }
 
 .articles h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.3rem;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color); /* H3s are less flashy than H2 */
 }
 
 .articles p {
-  font-family: Arial, sans-serif;
-  color: #444;
-  margin-bottom: 0.5rem;
+  font-family: var(--mono-font);
+  color: var(--text-color);
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
 }
 
 .articles a {
-  color: #0077cc;
+  color: var(--accent-color);
   font-size: 0.9rem;
 }
 
-.articles a:hover {
-  text-decoration: underline;
-}
-
-/* Footer */
+/* Footer: Console Prompt */
 footer {
   text-align: center;
   padding: 2rem 1rem;
-  margin-top: 3rem;
-  font-family: Arial, sans-serif;
+  margin-top: 4rem;
+  font-family: var(--mono-font);
+  color: var(--secondary-color);
+  border-top: 1px solid var(--accent-color);
+  background: #161b22;
+  text-shadow: 0 0 2px rgba(0, 255, 127, 0.5);
+}
+
+/* Light Mode Override (Optional Fallback) */
+/* This section handles the original "dark mode" button when used to enter "light mode" */
+body.light {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+body.light a {
+  color: var(--accent-color);
+}
+
+body.light h1, body.light h2, body.light h3, body.light header .logo {
+  color: var(--text-color);
+  text-shadow: none;
+}
+
+body.light header {
+  background-color: #fff;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+body.light footer {
+  background-color: #f7f7f7;
+  border-top: 1px solid var(--secondary-color);
   color: #555;
-  border-top: 1px solid #ddd;
+  text-shadow: none;
 }
 
-/* Dark Mode */
-body.dark {
-  background-color: #111;
-  color: #eee;
-}
-
-body.dark a {
-  color: #66aaff;
-}
-
-body.dark header {
+body.light #dark-mode {
   background-color: #222;
-  border-bottom: 1px solid #444;
   color: #fff;
+  border-color: #222;
 }
 
-body.dark footer {
-  background-color: #222;
-  border-top: 1px solid #444;
-  color: #ccc;
-}
 
-body.dark #dark-mode {
-  background-color: #555;
-  color: #fff;
-}
-
-/* Responsive */
+/* Responsive - No changes needed, structure is fine */
 @media (max-width: 768px) {
   header {
     flex-direction: column;
