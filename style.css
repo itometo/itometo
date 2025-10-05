@@ -99,6 +99,125 @@ header nav a:hover {
   transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
+
+/* Featured Article: Hero Section with Text on Image */
+
+.featured {
+  position: relative; /* Essential for positioning children absolutely */
+  width: 100%;
+  height: 60vh; /* Make the hero section a good height */
+  overflow: hidden; /* Ensures image doesn't spill out */
+  display: flex; /* Use flexbox to easily center content */
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Horizontally center content */
+  text-align: center; /* Center text within its container */
+  margin-top: 2rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 0 20px rgba(0, 255, 127, 0.2);
+}
+
+.featured img {
+  position: absolute; /* Position the image to cover the entire section */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  filter: grayscale(20%) brightness(0.7); /* Slightly grayscale and dim the image */
+  z-index: 1; /* Place image behind content */
+}
+
+/* Optional: Overlay to further dim the image and help text readability */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Semi-transparent dark overlay */
+  z-index: 2; /* Place overlay between image and content */
+}
+
+.hero-content {
+  position: relative; /* Keeps content above the image and overlay */
+  z-index: 3;
+  max-width: 800px; /* Limit content width for readability */
+  padding: 2rem;
+  /* Add a subtle background or text shadow for readability on busy images */
+  background: rgba(13, 17, 23, 0.151); /* Semi-transparent dark background for text */
+  border: 0px solid var(--secondary-color);
+  border-radius: 4px;
+}
+
+.featured h2 {
+  font-size: 3.2rem; /* Adjusted for image background */
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--text-color); /* Light text on dark overlay */
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Stronger shadow for readability */
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.75rem;
+  display: inline-block; /* Makes border-bottom only as wide as text */
+}
+
+.featured p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); /* Text shadow for contrast */
+}
+
+.featured a {
+  display: inline-block;
+  padding: 12px 25px; /* Slightly larger button */
+  border: 2px solid var(--accent-color); /* Stronger border */
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 1.0rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.3); /* Slight background to make button pop */
+}
+
+.featured a:hover {
+  background: var(--accent-color);
+  color: var(--bg-color);
+  text-decoration: none;
+  box-shadow: 0 0 15px rgba(0, 255, 127, 0.8), inset 0 0 10px rgba(0, 255, 127, 0.5); /* Inner glow */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .featured {
+    height: 50vh; /* Adjust height for mobile */
+  }
+
+  .featured h2 {
+    font-size: 2.2rem;
+  }
+
+  .featured p {
+    font-size: 0.95rem;
+  }
+
+  .hero-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured h2 {
+    font-size: 1.8rem;
+  }
+  .featured p {
+      display: none; /* Hide paragraph on very small screens if needed */
+  }
+}
+
+
 #dark-mode:hover {
   background: var(--accent-color);
   color: #111;
