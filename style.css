@@ -493,16 +493,51 @@ body.light .featured a:hover {
 
 
 
-/* Responsive - No changes needed, structure is fine */
+/* Responsive adjustments for smaller screens (Existing Block to be REPLACED) */
 @media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  .featured {
+    height: 45vh; /* Reduced from 50vh for a tighter look */
   }
 
-  header nav {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  .featured h2 {
+    font-size: 2rem; /* Reduced from 2.2rem */
+    line-height: 1.1;
+    border-bottom: 1px solid var(--accent-color); /* Thinner border */
+  }
+
+  .featured p {
+    font-size: 0.9rem; /* Reduced from 0.95rem */
+    margin-bottom: 1.5rem; /* Reduced spacing */
+  }
+
+  .hero-content {
+    padding: 1rem; /* Less padding */
+    /* Enhance the background for readability on mobile */
+    background: rgba(13, 17, 23, 0.7); /* Much darker background for text */
+  }
+
+  .featured a {
+      padding: 10px 20px; /* Slightly smaller button */
+      font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured {
+    height: 40vh; /* Further reduction for very small screens */
+  }
+  .featured h2 {
+    font-size: 1.6rem; /* Ensures the headline fits on one or two lines */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.9); /* Stronger shadow */
+  }
+  .featured p {
+      /* Reverting the hide for the paragraph—it's important content. */
+      display: block;
+      font-size: 0.8rem;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+  }
+
+  .featured a {
+      font-size: 0.8rem;
   }
 }
