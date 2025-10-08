@@ -97,17 +97,24 @@ const darkModeBtn = document.getElementById("dark-mode");
 
 // Function to set the button text based on the current body class
 function updateDarkModeButtonText() {
-    if (document.body.classList.contains("dark")) {
-        darkModeBtn.innerText = "Light Mode";
-    } else {
-        darkModeBtn.innerText = "Dark Mode";
-    }
+  if (document.body.classList.contains("dark")) {
+    darkModeBtn.innerText = "Light Mode";
+  } else {
+    darkModeBtn.innerText = "Dark Mode";
+  }
 }
 
-// Initial check on page load
-updateDarkModeButtonText();
+
+
+
 
 darkModeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  updateDarkModeButtonText(); // Update text after toggling class
+  if (document.body.classList.contains("dark")) {
+    document.body.classList.remove("dark");
+    document.body.classList.add("light");
+  } else {
+    document.body.classList.remove("light");
+    document.body.classList.add("dark");
+  }
+  updateDarkModeButtonText();
 });
