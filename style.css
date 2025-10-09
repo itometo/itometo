@@ -12,8 +12,10 @@
   --text-color: #c9d1d9; /* Light Grey Text */
   --accent-color: #00ff7f; /* Neon Green/Cyan (Primary Glow) */
   --secondary-color: #4a4f56; /* Subtle Border/Separator Grey */
+  /* Primary fonts: Inter for UI/body, Merriweather for headings, keep a monospace fallback for console elements */
+  --ui-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --heading-font: 'Merriweather', Georgia, serif;
   --mono-font: 'Inconsolata', 'Courier New', monospace;
-  --serif-font: Georgia, serif;
 }
 
 /* Light/Classic Mode for accessibility (Optional, but kept the structure) */
@@ -26,16 +28,30 @@ body.light {
 
 /* Default Body Style (Starts Dark) */
 body {
-  font-family: var(--mono-font); /* Monospace for Digital Look */
+  /* Use Inter for main body text for improved readability */
+  font-family: var(--ui-font);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
   transition: background-color 0.4s ease, color 0.4s ease; /* Smooth toggle */
 }
 
+/* Slightly larger base paragraph text for better readability across the site */
+p {
+  font-size: 1.02rem;
+}
+
+/* Slightly larger blockquote base size (keeps visual hierarchy) */
+blockquote {
+  font-size: 1.08rem;
+}
+
 /* Sci-Fi Text Enhancements */
 h1, h2, h3, header .logo {
-  font-family: var(--serif-font); /* Contrast with the monospace body */
+  font-family: var(--heading-font); /* Serif headings for character */
   letter-spacing: 0.1em; /* Digital separation */
   color: var(--accent-color); /* Highlight with the neon color */
   text-shadow: 0 0 5px rgba(0, 255, 127, 0.5); /* Subtle glow effect */
@@ -294,7 +310,7 @@ header nav a:hover {
 .articles p {
   font-family: var(--mono-font);
   color: var(--text-color);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   margin-bottom: 0.6rem;
 }
 
@@ -327,6 +343,25 @@ body.light {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background 0.4s, color 0.4s;
+}
+
+/* Make paragraph text slightly larger and bolder in light mode for improved legibility */
+body.light p {
+  font-size: 1.06rem; /* slightly bigger than default */
+  font-weight: 600;   /* semibold / bold for emphasis in light mode */
+  color: var(--text-color);
+  text-shadow: none; /* remove any subtle shadows that reduce contrast */
+  font-family: var(--ui-font); /* ensure readable UI font in light mode */
+}
+
+/* Make blockquotes match paragraph emphasis in light mode */
+body.light blockquote {
+  font-size: 1.06rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-shadow: none;
+  font-family: var(--ui-font);
+  border-left-color: var(--accent-color); /* keep the accent visible on light backgrounds */
 }
 
 /* Header */
