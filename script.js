@@ -1,56 +1,148 @@
-// ================= MOBILE MENU TOGGLE =================
-const nav = document.querySelector("header nav");
-const menuBtn = document.createElement("button");
+// ================= MOBILE MENU TOGGLE (Accessible) =================
+// Declare shared variables so other functions (applyTheme) can reference them
+let nav = null;
+let headerEl = null;
+let darkModeBtn = null;
+let menuBtn = null;
+let backdrop = null;
 
-// Sci-Fi Styling for Menu Button
-menuBtn.innerText = ":: MENU ::"; // Sci-Fi label
-menuBtn.id = "menu-btn";
-menuBtn.style.fontSize = "1rem";
-menuBtn.style.background = "none";
-menuBtn.style.border = "1px solid var(--secondary-color)"; // Border uses theme var
-menuBtn.style.padding = "5px 10px";
-menuBtn.style.cursor = "pointer";
-menuBtn.style.display = "none";
-menuBtn.style.color = "var(--accent-color)"; // Accent text
-menuBtn.style.fontFamily = "'Inconsolata', 'Courier New', monospace";
-menuBtn.style.letterSpacing = "0.1em";
+// Guard flags to avoid binding listeners multiple times
+if (!window.__menuInit) window.__menuInit = { boundResize: false, initialized: false };
 
-// Append the button to header
-document.querySelector("header").appendChild(menuBtn);
+function isMobile() { return window.innerWidth <= 768; }
 
-// Show/hide menu on small screens
+function createBackdrop() {
+  if (backdrop) return backdrop;
+  backdrop = document.querySelector('.nav-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    document.body.appendChild(backdrop);
+  }
+  // ensure single listener
+  if (!backdrop.__bound) {
+    backdrop.addEventListener('click', () => { hideMenu(); });
+    backdrop.__bound = true;
+  }
+  return backdrop;
+}
+
+function showBackdrop() { createBackdrop(); backdrop.classList.add('visible'); }
+function hideBackdrop() { if (backdrop) backdrop.classList.remove('visible'); }
+
+function showMenu() {
+  if (!nav || !menuBtn) return;
+  nav.classList.add('menu-open');
+  nav.setAttribute('aria-hidden', 'false');
+  menuBtn.setAttribute('aria-expanded', 'true');
+  menuBtn.classList.add('open');
+  showBackdrop();
+  const first = nav.querySelector('a');
+  if (first) first.focus();
+}
+
+function hideMenu() {
+  if (!nav || !menuBtn) return;
+  nav.classList.remove('menu-open');
+  nav.setAttribute('aria-hidden', 'true');
+  menuBtn.setAttribute('aria-expanded', 'false');
+  menuBtn.classList.remove('open');
+  hideBackdrop();
+  menuBtn.focus();
+}
+
 function handleResize() {
-  // Using 768px to align with the CSS media query
-  if (window.innerWidth <= 768) { 
-    menuBtn.style.display = "block";
-    // Keep nav hidden initially on mobile
-    if (nav.classList.contains('menu-open')) {
-        nav.style.display = "flex"; // If menu was open, keep it open on resize
-    } else {
-        nav.style.display = "none";
-    }
+  if (!menuBtn || !nav) return;
+  if (isMobile()) {
+    menuBtn.style.display = 'inline-block';
+    // close menu on resize down
+    if (!nav.classList.contains('menu-open')) hideMenu();
   } else {
-    menuBtn.style.display = "none";
-    nav.style.display = "flex";
-    nav.style.flexDirection = "row";
-    nav.style.gap = "2rem"; // Match CSS gap
-    nav.classList.remove('menu-open'); // Ensure class is removed on desktop
+    menuBtn.style.display = 'none';
+    // ensure nav is visible on desktop
+    nav.style.display = 'flex';
+    nav.classList.remove('menu-open');
+    nav.setAttribute('aria-hidden', 'false');
+    menuBtn.setAttribute('aria-expanded', 'false');
   }
 }
-window.addEventListener("resize", handleResize);
-window.addEventListener("load", handleResize);
 
-// Toggle nav on click
-menuBtn.addEventListener("click", () => {
-  if (nav.style.display === "none") {
-    nav.style.display = "flex";
-    nav.style.flexDirection = "column";
-    nav.style.gap = "1rem";
-    nav.classList.add('menu-open');
-  } else {
-    nav.style.display = "none";
-    nav.classList.remove('menu-open');
+function bindMenuEvents() {
+  if (!menuBtn) return;
+  if (!window.__menuInit.boundResize) {
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('load', handleResize);
+    window.__menuInit.boundResize = true;
   }
+
+  // Avoid duplicate click listener
+  if (!menuBtn.__menuBound) {
+    menuBtn.addEventListener('click', () => {
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      if (expanded) hideMenu(); else showMenu();
+    });
+    menuBtn.__menuBound = true;
+  }
+
+  // Close menu when clicking outside
+  if (!document.__menuOutsideBound) {
+    document.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      if (!nav || !menuBtn) return;
+      const target = e.target;
+      if (nav.contains(target) || menuBtn.contains(target)) return; // inside
+      if (nav.classList.contains('menu-open')) hideMenu();
+    });
+    document.__menuOutsideBound = true;
+  }
+
+  // Close on Escape key
+  if (!document.__menuEscBound) {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav && nav.classList.contains('menu-open')) {
+        hideMenu();
+      }
+    });
+    document.__menuEscBound = true;
+  }
+}
+
+function initMenu() {
+  // If we've already initialized the menu, just re-run resize to adjust display
+  headerEl = document.querySelector('header');
+  nav = document.querySelector('header nav');
+  darkModeBtn = document.getElementById('dark-mode');
+  menuBtn = document.getElementById('menu-btn');
+
+  // Fallback: create menu button if partial didn't include it
+  if (!menuBtn && headerEl) {
+    menuBtn = document.createElement('button');
+    menuBtn.id = 'menu-btn';
+    menuBtn.setAttribute('aria-controls', 'main-nav');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.setAttribute('aria-label', 'Toggle main menu');
+    menuBtn.innerText = 'MENU';
+    headerEl.appendChild(menuBtn);
+  }
+
+  if (nav) {
+    nav.setAttribute('id', nav.getAttribute('id') || 'main-nav');
+    if (!nav.hasAttribute('aria-hidden')) nav.setAttribute('aria-hidden', 'true');
+  }
+
+  bindMenuEvents();
+  // run a resize to set correct initial state
+  handleResize();
+  window.__menuInit.initialized = true;
+}
+
+// Initialize on DOM ready and after partials replacement
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMenu);
+else initMenu();
+
+window.addEventListener('partials:loaded', () => {
+  // Re-init menu after partials included
+  initMenu();
 });
 
 

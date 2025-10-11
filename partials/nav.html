@@ -3,7 +3,17 @@
       <img src="{BASE}icon.png" alt="Itometo alien icon" class="logo-mark"/>
       <span>itoMeto</span>
     </div>
-    <nav>
+    <!-- Mobile menu button (progressive enhancement): if JS is disabled this remains inert but visible)
+         JS will toggle aria-expanded on this button and add/remove .open class for animation -->
+    <button id="menu-btn" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle menu">
+      <span class="hamburger" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+
+    <nav id="main-nav" aria-label="Primary navigation">
       <a href="{BASE}index.html#home">Home</a>
       <a href="{BASE}index.html#logs">Logs</a>
       <a href="{BASE}index.html#guide">Field Guide</a>

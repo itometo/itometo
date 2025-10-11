@@ -107,6 +107,68 @@ header nav {
   gap: 2rem;
 }
 
+/* Mobile menu button (hidden by default, shown via JS on small screens) */
+#menu-btn {
+  display: none; /* Shown via JS when needed */
+  background: transparent;
+  border: 1px solid var(--secondary-color);
+  color: var(--accent-color);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--mono-font);
+  letter-spacing: 0.08em;
+  transition: background 0.2s, color 0.2s, transform 0.12s;
+}
+
+#menu-btn:active { transform: translateY(1px); }
+
+/* Enhanced nav link focus styles for accessibility */
+header nav a:focus {
+  outline: 2px dashed var(--accent-color);
+  outline-offset: 4px;
+}
+
+/* Hamburger visuals inside #menu-btn */
+#menu-btn .hamburger {
+  display: inline-block;
+  width: 26px;
+  height: 18px;
+  position: relative;
+}
+
+#menu-btn .hamburger span {
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: var(--accent-color);
+  left: 0;
+  transition: transform 220ms ease, opacity 180ms ease;
+}
+
+#menu-btn .hamburger span:nth-child(1) { top: 0; }
+#menu-btn .hamburger span:nth-child(2) { top: 8px; }
+#menu-btn .hamburger span:nth-child(3) { top: 16px; }
+
+/* Hamburger -> X when button has .open class */
+#menu-btn.open .hamburger span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+#menu-btn.open .hamburger span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+#menu-btn.open .hamburger span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* Backdrop behind the nav when open */
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 900;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.nav-backdrop.visible { opacity: 1; pointer-events: auto; }
+
 header nav a {
   text-decoration: none;
   color: var(--text-color);
@@ -240,6 +302,67 @@ header nav a:hover {
 
   .hero-content {
     padding: 1.5rem;
+  }
+}
+
+/* Mobile navigation: hide nav by default and show as a sliding panel */
+@media (max-width: 768px) {
+  header {
+    padding: 0.8rem 1rem;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Place the menu button before the dark mode toggle */
+  #menu-btn { display: inline-block; }
+
+  header .logo { font-size: 1.2rem; }
+
+  /* Start hidden; script will toggle an "open" class on nav */
+  header nav {
+    position: absolute;
+    top: 64px; /* below header bar (approx) */
+    right: 12px;
+    background: var(--bg-elev-1);
+    border: 1px solid var(--secondary-color);
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 160px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transform-origin: top right;
+    transform: scale(0.98) translateY(-6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 999;
+  }
+
+  /* When menu-open class is present show nav */
+  header nav.menu-open,
+  header nav[aria-hidden="false"] {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Make links larger/tappable on mobile */
+  header nav a {
+    padding: 8px 10px;
+    display: block;
+    border-radius: 6px;
+  }
+
+  /* Ensure dark-mode button stays visible */
+  #dark-mode { margin-left: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  header nav {
+    right: 8px;
+    top: 56px;
+    min-width: 140px;
   }
 }
 
@@ -548,52 +671,89 @@ body.light .featured a:hover {
 
 
 
-/* Responsive adjustments for smaller screens (Existing Block to be REPLACED) */
-@media (max-width: 768px) {
+/* Responsive adjustments for smaller screens - consolidated and mobile-first
+   Improves hero image scaling, places content near the bottom, increases
+   contrast and touch target sizes for phones and small tablets. */
+@media (max-width: 900px) {
   .featured {
-    height: 45vh; /* Reduced from 50vh for a tighter look */
+    /* Use a clamped height so the hero is predictable on tall/short screens */
+    height: clamp(280px, 45vh, 420px);
+    padding: 0; /* content container provides padding */
+    border-radius: 10px;
+  }
+
+  .featured img {
+    /* Keep subject of photo visible on narrow screens */
+    object-position: center top;
+  }
+
+  /* Darker, simpler overlay on mobile to increase legibility */
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(0,0,0,0.32), rgba(0,0,0,0.66));
+  }
+
+  /* Float the content near the bottom center and restrict width */
+  .hero-content {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    width: min(92%, 720px);
+    max-width: 92%;
+    padding: 1rem 1.25rem;
+    background: rgba(6, 10, 14, 0.65);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+    backdrop-filter: blur(4px);
+    text-align: center;
   }
 
   .featured h2 {
-    font-size: 2rem; /* Reduced from 2.2rem */
-    line-height: 1.1;
-    border-bottom: 1px solid var(--accent-color); /* Thinner border */
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    line-height: 1.12;
+    margin-bottom: 0.5rem;
+    border-bottom: none; /* keep the compact look */
   }
 
   .featured p {
-    font-size: 0.9rem; /* Reduced from 0.95rem */
-    margin-bottom: 1.5rem; /* Reduced spacing */
-  }
-
-  .hero-content {
-    padding: 1rem; /* Less padding */
-    /* Enhance the background for readability on mobile */
-    background: rgba(13, 17, 23, 0.7); /* Much darker background for text */
+    font-size: clamp(0.9rem, 2.6vw, 1rem);
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
   }
 
   .featured a {
-      padding: 10px 20px; /* Slightly smaller button */
-      font-size: 0.9rem;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    border-width: 2px;
+    border-radius: 999px;
   }
 }
 
 @media (max-width: 480px) {
   .featured {
-    height: 40vh; /* Further reduction for very small screens */
+    height: clamp(240px, 38vh, 340px);
+    margin-top: 1rem;
   }
+
+  .hero-content {
+    padding: 0.85rem 1rem;
+    bottom: 0.85rem;
+  }
+
   .featured h2 {
-    font-size: 1.6rem; /* Ensures the headline fits on one or two lines */
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.9); /* Stronger shadow */
+    font-size: clamp(1.4rem, 5.5vw, 1.8rem);
+    letter-spacing: 0;
+    line-height: 1.08;
   }
+
   .featured p {
-      /* Reverting the hide for the paragraph—it's important content. */
-      display: block;
-      font-size: 0.8rem;
-      text-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
   }
 
   .featured a {
-      font-size: 0.8rem;
+    padding: 10px 16px;
+    font-size: 0.85rem;
   }
 }
 
