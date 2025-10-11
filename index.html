@@ -1,96 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>itoMeto</title>
-  <!-- Load web fonts: Inter for UI text, Merriweather for headings -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>itoMeto — Lost Alien on Earth</title>
+  <meta name="description" content="The field logs of Itometo, an alien lost on Earth, learning how to live among humans.">
+  <script>/* early class set to reduce flash */
+    (function(){
+      try{
+        var s=localStorage.getItem('theme');
+        var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.add('js');
+        document.addEventListener('DOMContentLoaded',function(){
+          document.body.classList.remove('dark','light');
+          document.body.classList.add(s|| (d?'dark':'light'));
+        });
+      }catch(e){}
+    })();
+  </script>
+  <script data-include="partials/head.html" data-base="./"></script>
+  <script src="partials/include.js"></script>
 </head>
 <body class="dark">
-
-  <header>
-    <div class="logo">itoMeto</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Blog</a>
-      <a href="#">Category</a>
-      <a href="#">Contact</a>
-      <a href="#">About</a>
-    </nav>
-    <button id="dark-mode">Light Mode</button>
-  </header>
+  <script data-include="partials/nav.html" data-base="./"></script>
+  <script src="script.js"></script>
 
 
-  <main class="container">
-
-
-    <section class="featured">
-      <img src="images/hero-image.png" alt="hero-image">
-      <div class="hero-overlay"></div> <div class="hero-content">
-        <h2>“I Am Itometa: The Alien Who Escaped the Lab to Live on Earth”</h2>
-        <p>#The most important thing is that I am not related to this Earth, that I came from another world. Also, over the past few years I have learned that I am trapped or trapped in a human body.#</p>
-        <a href="posts/first-post.html">Access Story</a>
+  <main class="container" id="home">
+    <!-- Hero -->
+    <section class="featured" aria-labelledby="hero-title">
+      <img src="images/hero-image.png" alt="A lone figure under a vast night sky">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h2 id="hero-title">Lost on Earth: Itometo’s Field Logs</h2>
+        <p>An alien escaped a lab and woke up in a human body. To survive, I observe, record, and learn how to live here.</p>
+        <a href="posts/first-post.html">Begin the Story</a>
       </div>
     </section>
 
-    <section class="articles">
+    <!-- Logs Grid -->
+    <section class="articles" id="logs" aria-labelledby="logs-title">
+      <h2 class="section-title" id="logs-title">Latest Logs</h2>
 
       <div class="article-card">
         <article>
-          <img src="images/first-post-image-1.png" alt="Investing">
-          <h3>“I Am Itometa: The Alien Who Escaped the Lab to Live on Earth”</h3>
-          <p>#The most important thing is that I am not related to this Earth, that I came from another world. Also, over the past few years I have learned that I am trapped or trapped in a human body.#</p>
-          <a href="#">Read More</a>
+          <img src="images/first-post-image-1.png" alt="Awakening in the lab">
+          <h3>Log 001 · Awakening</h3>
+          <p>I open my eyes. Metal. Cold light. Voices. I am not from here—and yet, I am inside a human body...</p>
+          <a href="posts/first-post.html">Read Log</a>
         </article>
       </div>
 
       <div class="article-card">
         <article>
-          <img src="img/2.jpg" alt="Crypto">
-          <h3>Understanding Decentralized Autonomous Organizations (DAOs)</h3>
-          <p>Exploring the governance models and legal challenges facing DAOs as they gain traction in the crypto space...</p>
-          <a href="#">Read More</a>
+          <img src="images/first-post-image-2.png" alt="Trying on clothing">
+          <h3>Log 002 · Clothing Protocols</h3>
+          <p>Humans wear fabric skins. Without them, they panic. I study coverings, sizes, and social meaning.</p>
+          <a href="posts/post-template.html">Read Log</a>
         </article>
       </div>
 
-      <div class="article-card">
-        <article>
-          <img src="img/3.jpg" alt="Computing">
-          <h3>Quantum Leap: The Impact on Encryption Security</h3>
-          <p>Analyzing the risk and potential solutions as quantum computing threatens current cryptographic standards...</p>
-          <a href="#">Read More</a>
-        </article>
-      </div>
 
-      <div class="article-card">
-        <article>
-          <img src="img/1.jpg" alt="Ecology">
-          <h3>Sustainable Energy Solutions in a Data-Driven World</h3>
-          <p>How the green energy sector is leveraging machine learning to optimize grid efficiency and resource allocation...</p>
-          <a href="#">Read More</a>
-        </article>
-      </div>
+    </section>
 
-      <div class="article-card">
-        <article>
-          <img src="img/2.jpg" alt="Health">
-          <h3>Neural Interfaces: The Next Generation of Human-Computer Interaction</h3>
-          <p>An ethical review of brain-computer interface technology and its promise for medical and industrial applications...</p>
-          <a href="#">Read More</a>
-        </article>
+    <!-- Field Guide -->
+    <section class="guide" id="guide" aria-labelledby="guide-title">
+      <h2 class="section-title" id="guide-title">Field Guide to Earth</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>Language Protocols</h3>
+          <p>Greetings, tone, and the hidden data inside small talk. How to say “hello” without alerting suspicion.</p>
+        </div>
+        <div class="guide-card">
+          <h3>Body Maintenance</h3>
+          <p>Sleep cycles, food frequency, and dealing with pain signals from this organic shell.</p>
+        </div>
+        <div class="guide-card">
+          <h3>Social Cover</h3>
+          <p>Clothes, names, and stories: building a sustainable human disguise for daily function.</p>
+        </div>
+        <div class="guide-card">
+          <h3>Shelter & Movement</h3>
+          <p>Safe zones, temporary nests, and navigating public spaces without drawing attention.</p>
+        </div>
       </div>
+    </section>
 
-      <div class="article-card">
-        <article>
-          <img src="img/3.jpg" alt="Space">
-          <h3>Commercializing Low Earth Orbit: New Economic Frontiers</h3>
-          <p>Examining the emerging industries—from manufacturing to tourism—that are driving the new space economy...</p>
-          <a href="#">Read More</a>
-        </article>
-      </div>
+    <!-- About / Origin -->
+    <section class="about" id="about" aria-labelledby="about-title">
+      <h2 class="section-title" id="about-title">Origin Signal</h2>
+      <p>
+        I am Itometo. I do not belong to this planet. For now, I live inside a human form. I learn. I adapt. I document.
+        These logs help me remember and might help you understand. If you read this, keep the signal safe.
+      </p>
+      <a class="cta" href="posts/first-post.html">Access Origin Log</a>
+    </section>
 
+    <!-- Contact -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <h2 class="section-title" id="contact-title">Send a Signal</h2>
+      <p>Encrypted messages are welcome. Use this human channel:</p>
+      <p><a class="email" href="mailto:hello.itometo@gmail.com">hello.itometo@gmail.com</a></p>
     </section>
 
   </main>

@@ -7,11 +7,11 @@ menuBtn.innerText = ":: MENU ::"; // Sci-Fi label
 menuBtn.id = "menu-btn";
 menuBtn.style.fontSize = "1rem";
 menuBtn.style.background = "none";
-menuBtn.style.border = "1px solid #00ff7f"; // Sci-Fi border
+menuBtn.style.border = "1px solid var(--secondary-color)"; // Border uses theme var
 menuBtn.style.padding = "5px 10px";
 menuBtn.style.cursor = "pointer";
 menuBtn.style.display = "none";
-menuBtn.style.color = "#00ff7f"; // Neon green text
+menuBtn.style.color = "var(--accent-color)"; // Accent text
 menuBtn.style.fontFamily = "'Inconsolata', 'Courier New', monospace";
 menuBtn.style.letterSpacing = "0.1em";
 
@@ -64,13 +64,13 @@ backToTop.style.right = "20px";
 backToTop.style.padding = "10px 15px";
 backToTop.style.fontSize = "0.9rem";
 // Sci-Fi Styling
-backToTop.style.background = "#0d1117"; // Dark background
-backToTop.style.color = "#00ff7f"; // Neon green text
-backToTop.style.border = "1px solid #00ff7f";
+backToTop.style.background = "var(--bg-color)"; // Themed background
+backToTop.style.color = "var(--accent-color)"; // Themed text
+backToTop.style.border = "1px solid var(--accent-color)";
 backToTop.style.borderRadius = "0"; // Sharp corners
 backToTop.style.cursor = "pointer";
 backToTop.style.display = "none";
-backToTop.style.boxShadow = "0 0 10px rgba(0, 255, 127, 0.5)"; // Glow
+backToTop.style.boxShadow = "0 0 10px rgba(103, 255, 155, 0.5)"; // Glow
 backToTop.style.fontFamily = "'Inconsolata', 'Courier New', monospace";
 backToTop.style.letterSpacing = "0.05em";
 
@@ -92,29 +92,82 @@ backToTop.addEventListener("click", () => {
 
 
 // ================= DARK/LIGHT MODE TOGGLE =================
-// Merged and simplified logic to match the 'Light Mode' button text in the simplified HTML
-const darkModeBtn = document.getElementById("dark-mode");
-
-// Function to set the button text based on the current body class
-function updateDarkModeButtonText() {
-  if (document.body.classList.contains("dark")) {
-    darkModeBtn.innerText = "Light Mode";
-  } else {
-    darkModeBtn.innerText = "Dark Mode";
-  }
+function bindThemeToggle() {
+  const btn = document.getElementById("dark-mode");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("dark");
+    const next = isDark ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
 }
 
-
-
-
-
-darkModeBtn.addEventListener("click", () => {
-  if (document.body.classList.contains("dark")) {
-    document.body.classList.remove("dark");
-    document.body.classList.add("light");
-  } else {
-    document.body.classList.remove("light");
-    document.body.classList.add("dark");
+function applyTheme(theme) {
+  document.body.classList.remove("dark", "light");
+  document.body.classList.add(theme);
+  const darkModeBtn = document.getElementById("dark-mode");
+  if (darkModeBtn) {
+    darkModeBtn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode";
+    darkModeBtn.setAttribute("aria-pressed", theme === "dark" ? "false" : "true");
   }
-  updateDarkModeButtonText();
+  // Update dynamic inline-styled elements to reflect CSS vars
+  try {
+    const cs = getComputedStyle(document.body);
+    const accent = cs.getPropertyValue('--accent-color').trim();
+    const bg = cs.getPropertyValue('--bg-color').trim();
+    menuBtn.style.color = accent;
+    menuBtn.style.borderColor = cs.getPropertyValue('--secondary-color').trim() || accent;
+    backToTop.style.color = accent;
+    backToTop.style.borderColor = accent;
+    backToTop.style.background = bg;
+  } catch (e) {}
+  // DEBUG: Show theme in footer
+  try {
+    let indicator = document.getElementById('theme-indicator');
+    if (!indicator) {
+      indicator = document.createElement('span');
+      indicator.id = 'theme-indicator';
+      indicator.style.marginLeft = '1em';
+      indicator.style.fontWeight = 'bold';
+      indicator.style.fontSize = '1em';
+      indicator.style.color = 'var(--accent-color)';
+      const footer = document.querySelector('footer');
+      if (footer) footer.appendChild(indicator);
+    }
+    indicator.textContent = `[Theme: ${theme}]`;
+  } catch (e) {}
+  // DEBUG: Log to console
+  console.log('[Theme]', theme, 'body.classList:', document.body.classList.value);
+}
+
+function initTheme() {
+  let theme = "dark";
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved) theme = saved;
+    else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = "dark";
+    else theme = "light";
+  } catch (e) {}
+  applyTheme(theme);
+}
+
+initTheme();
+bindThemeToggle();
+window.addEventListener('partials:loaded', () => {
+  // Re-bind after nav include
+  bindThemeToggle();
+  // Also refresh button label to current theme
+  const isDark = document.body.classList.contains("dark");
+  applyTheme(isDark ? 'dark' : 'light');
+});
+
+// Delegated click handler as a robust fallback
+document.addEventListener('click', (ev) => {
+  const btn = ev.target && ev.target.closest && ev.target.closest('#dark-mode');
+  if (!btn) return;
+  const isDark = document.body.classList.contains('dark');
+  const next = isDark ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('theme', next); } catch (e) {}
 });

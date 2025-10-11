@@ -1,4 +1,4 @@
-/* Base: Sci-Fi Core */
+/* Base: Alien Field Log Theme */
 * {
   margin: 0;
   padding: 0;
@@ -7,23 +7,31 @@
 
 /* Primary Color Palette */
 :root {
-  /* Sci-Fi Default (Dark Mode is the primary style) */
-  --bg-color: #0d1117; /* Very Dark Space/Code Background */
-  --text-color: #c9d1d9; /* Light Grey Text */
-  --accent-color: #00ff7f; /* Neon Green/Cyan (Primary Glow) */
-  --secondary-color: #4a4f56; /* Subtle Border/Separator Grey */
-  /* Primary fonts: Inter for UI/body, Merriweather for headings, keep a monospace fallback for console elements */
+  /* Dark is primary aesthetic */
+  --bg-color: #0b0f14; /* deep night */
+  --bg-elev-1: #0f1520; /* elevated panel */
+  --text-color: #c8d2dc; /* starlight */
+  --muted: #7a8691; /* muted text */
+  --accent-color: #67ff9b; /* alien green */
+  --accent-2: #7bd3ff; /* sky blue */
+  --secondary-color: #263241; /* borders */
+  --glow: rgba(103,255,155,0.35);
+
   --ui-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  --heading-font: 'Merriweather', Georgia, serif;
+  --heading-font: 'Space Grotesk', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   --mono-font: 'Inconsolata', 'Courier New', monospace;
 }
 
 /* Light/Classic Mode for accessibility (Optional, but kept the structure) */
 body.light {
-  --bg-color: #ffffff;
-  --text-color: #111111;
-  --accent-color: #0077cc;
-  --secondary-color: #ddd;
+  --bg-color: #f6fbff; /* pale day */
+  --bg-elev-1: #ffffff;
+  --text-color: #13202f; /* ink */
+  --muted: #455665;
+  --accent-color: #0c7bd6; /* clear sky */
+  --accent-2: #0aa36e; /* field green */
+  --secondary-color: #d6e1ea;
+  --glow: rgba(12,123,214,0.25);
 }
 
 /* Default Body Style (Starts Dark) */
@@ -49,12 +57,17 @@ blockquote {
   font-size: 1.08rem;
 }
 
-/* Sci-Fi Text Enhancements */
-h1, h2, h3, header .logo {
-  font-family: var(--heading-font); /* Serif headings for character */
-  letter-spacing: 0.1em; /* Digital separation */
-  color: var(--accent-color); /* Highlight with the neon color */
-  text-shadow: 0 0 5px rgba(0, 255, 127, 0.5); /* Subtle glow effect */
+h1, h2, h3, .section-title, header .logo span {
+  font-family: var(--heading-font);
+  letter-spacing: 0.02em;
+  color: var(--text-color);
+}
+
+.section-title {
+  margin: 3rem 0 1rem;
+  font-size: 1.8rem;
+  border-left: 4px solid var(--accent-color);
+  padding-left: 0.75rem;
 }
 
 a {
@@ -75,14 +88,19 @@ header {
   padding: 1.2rem 2rem;
   /* Use a subtle box shadow instead of a harsh border for depth */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  background: #161b22; /* Slightly different dark shade */
-  border-bottom: 2px solid var(--accent-color); /* Strong accent line */
+  background: #0f1520;
+  border-bottom: 1px solid var(--secondary-color);
 }
 
 header .logo {
-  font-size: 2.2rem;
-  font-weight: normal; /* Less bold, more refined */
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
+
+.logo-mark { width: 28px; height: 28px; filter: drop-shadow(0 0 6px var(--glow)); border-radius: 4px; }
 
 header nav {
   display: flex;
@@ -98,17 +116,17 @@ header nav a {
 }
 
 header nav a:hover {
-  color: var(--accent-color); /* Highlight on hover */
-  text-shadow: 0 0 3px var(--accent-color);
+  color: var(--accent-color);
+  text-shadow: 0 0 6px var(--glow);
 }
 
 /* Dark Mode Toggle Button */
 #dark-mode {
   background: var(--secondary-color);
   color: var(--text-color);
-  border: 1px solid var(--accent-color);
+  border: 1px solid var(--secondary-color);
   padding: 8px 16px;
-  border-radius: 2px; /* Sharp edges */
+  border-radius: 999px;
   cursor: pointer;
   font-size: 0.8rem;
   font-family: var(--mono-font);
@@ -128,9 +146,9 @@ header nav a:hover {
   justify-content: center; /* Horizontally center content */
   text-align: center; /* Center text within its container */
   margin-top: 2rem;
-  border-radius: 6px;
-  border: 1px solid var(--accent-color);
-  box-shadow: 0 0 20px rgba(0, 255, 127, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--secondary-color);
+  box-shadow: 0 0 32px var(--glow);
 }
 
 .featured img {
@@ -151,7 +169,7 @@ header nav a:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4); /* Semi-transparent dark overlay */
+  background: radial-gradient(circle at 70% 30%, rgba(103,255,155,0.12), rgba(0,0,0,0.55) 40%), linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
   z-index: 2; /* Place overlay between image and content */
 }
 
@@ -160,21 +178,21 @@ header nav a:hover {
   z-index: 3;
   max-width: 800px; /* Limit content width for readability */
   padding: 2rem;
-  /* Add a subtle background or text shadow for readability on busy images */
-  background: rgba(13, 17, 23, 0.151); /* Semi-transparent dark background for text */
-  border: 0px solid var(--secondary-color);
-  border-radius: 4px;
+  background: rgba(15, 21, 32, 0.5);
+  border: 1px solid var(--secondary-color);
+  border-radius: 10px;
+  backdrop-filter: blur(2px);
 }
 
 .featured h2 {
   font-size: 3.2rem; /* Adjusted for image background */
   line-height: 1.2;
   margin-bottom: 1rem;
-  color: var(--text-color); /* Light text on dark overlay */
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Stronger shadow for readability */
+  color: var(--text-color);
+  text-shadow: 0 0 18px rgba(0,0,0,0.8);
   border-bottom: 2px solid var(--accent-color);
   padding-bottom: 0.75rem;
-  display: inline-block; /* Makes border-bottom only as wide as text */
+  display: inline-block;
 }
 
 .featured p {
@@ -188,14 +206,15 @@ header nav a:hover {
 .featured a {
   display: inline-block;
   padding: 12px 25px; /* Slightly larger button */
-  border: 2px solid var(--accent-color); /* Stronger border */
+  border: 2px solid var(--accent-color);
   color: var(--accent-color);
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.0rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.3); /* Slight background to make button pop */
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
 }
 
 .featured a:hover {
@@ -286,13 +305,15 @@ header nav a:hover {
 .article-card {
   padding: 1rem;
   border: 1px solid var(--secondary-color);
-  background: rgba(0, 0, 0, 0.3);
-  transition: border-color 0.3s, background 0.3s;
+  background: var(--bg-elev-1);
+  transition: transform 0.2s ease, border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
 }
 
 .article-card:hover {
   border-color: var(--accent-color);
-  background: rgba(0, 255, 127, 0.1);
+  box-shadow: 0 0 24px var(--glow);
+  transform: translateY(-2px);
 }
 
 .articles img {
@@ -304,7 +325,7 @@ header nav a:hover {
 .articles h3 {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
-  color: var(--text-color); /* H3s are less flashy than H2 */
+  color: var(--text-color);
 }
 
 .articles p {
@@ -325,10 +346,9 @@ footer {
   padding: 2rem 1rem;
   margin-top: 4rem;
   font-family: var(--mono-font);
-  color: var(--secondary-color);
-  border-top: 1px solid var(--accent-color);
-  background: #161b22;
-  text-shadow: 0 0 2px rgba(0, 255, 127, 0.5);
+  color: var(--muted);
+  border-top: 1px solid var(--secondary-color);
+  background: #0f1520;
 }
 
 /* =====================================================
@@ -576,3 +596,32 @@ body.light .featured a:hover {
       font-size: 0.8rem;
   }
 }
+
+/* Guide, About, Contact */
+.guide, .about, .contact {
+  margin-top: 4rem;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.guide-card {
+  border: 1px solid var(--secondary-color);
+  background: var(--bg-elev-1);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.about p { margin: 0.5rem 0 1rem; color: var(--text-color); }
+.about .cta {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 999px;
+}
+
+.contact .email { font-weight: 600; }
