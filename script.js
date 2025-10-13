@@ -282,18 +282,14 @@ function applyTheme(theme) {
 }
 
 function initTheme() {
-  let theme = "dark"; // Default to dark mode
+  let theme = "dark"; // Always default to dark mode
   try {
     const saved = localStorage.getItem("theme");
     if (saved) {
       theme = saved; // Use saved preference if exists
     } else {
-      // Default to dark mode, but respect system preference if it's explicitly light
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        theme = "light";
-      } else {
-        theme = "dark"; // Default to dark mode
-      }
+      // Always default to dark mode, completely ignore system preferences
+      theme = "dark";
     }
   } catch (e) {
     theme = "dark"; // Fallback to dark mode on any error

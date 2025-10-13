@@ -7,9 +7,8 @@
     (function(){
       try {
         const saved = localStorage.getItem('theme');
-        const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-        // Default to dark mode, but respect explicit light preference
-        const theme = saved || (prefersLight ? 'light' : 'dark');
+        // Always default to dark mode, ignore system preferences completely
+        const theme = saved || 'dark';
         document.addEventListener('DOMContentLoaded', function(){
           document.body.classList.remove('dark','light');
           document.body.classList.add(theme);
