@@ -41,7 +41,7 @@
           '      <a href="'+base+'index.html#about">Origin</a>'+
           '      <a href="'+base+'index.html#contact">Contact</a>'+
           '    </nav>'+
-          '    <button id="dark-mode" aria-label="Toggle color theme" aria-pressed="false" title="Switch color theme">🌙 Dark</button>'+
+          '    <button id="dark-mode" aria-label="Toggle color theme" aria-pressed="false" title="Switch to light mode">☀️ Light</button>'+
           '  </header>'
         );
       } else if (src.endsWith('head.html')) {

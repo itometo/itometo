@@ -7,12 +7,19 @@
     (function(){
       try {
         const saved = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = saved || (prefersDark ? 'dark':'light');
+        const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        // Default to dark mode, but respect explicit light preference
+        const theme = saved || (prefersLight ? 'light' : 'dark');
         document.addEventListener('DOMContentLoaded', function(){
           document.body.classList.remove('dark','light');
           document.body.classList.add(theme);
         });
-      } catch(e) {}
+      } catch(e) {
+        // Fallback to dark mode
+        document.addEventListener('DOMContentLoaded', function(){
+          document.body.classList.remove('dark','light');
+          document.body.classList.add('dark');
+        });
+      }
     })();
   </script>

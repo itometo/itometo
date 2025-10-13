@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Toggle Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark {
+            background: #0b0f14;
+            color: #c8d2dc;
+        }
+        
+        body.light {
+            background: #f6fbff;
+            color: #13202f;
+        }
+        
+        #dark-mode {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
+        body.dark #dark-mode {
+            background: #263241;
+            color: #c8d2dc;
+            border-color: #263241;
+        }
+        
+        .debug {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="dark">
+    <h1>Dark/Light Mode Toggle Test</h1>
+    
+    <button id="dark-mode">🌙 Dark</button>
+    
+    <div class="debug">
+        <h3>Debug Info:</h3>
+        <p>Current theme: <span id="current-theme">dark</span></p>
+        <p>Body classes: <span id="body-classes">dark</span></p>
+        <p>Button found: <span id="button-status">checking...</span></p>
+        <p>Event bound: <span id="event-status">checking...</span></p>
+    </div>
+    
+    <div>
+        <h3>Instructions:</h3>
+        <ul>
+            <li>Click the theme toggle button above</li>
+            <li>Try keyboard shortcut: Ctrl+Shift+D (or Cmd+Shift+D on Mac)</li>
+            <li>Watch the debug info update</li>
+            <li>Page should switch between dark and light themes</li>
+        </ul>
+    </div>
+    
+    <script>
+        function updateDebugInfo() {
+            const isDark = document.body.classList.contains('dark');
+            const theme = isDark ? 'dark' : 'light';
+            
+            document.getElementById('current-theme').textContent = theme;
+            document.getElementById('body-classes').textContent = document.body.className;
+            
+            const btn = document.getElementById('dark-mode');
+            document.getElementById('button-status').textContent = btn ? 'Found ✓' : 'Not found ✗';
+            document.getElementById('event-status').textContent = btn && btn.hasAttribute('data-theme-bound') ? 'Bound ✓' : 'Not bound ✗';
+        }
+        
+        function applyTheme(theme) {
+            console.log(`Applying theme: ${theme}`);
+            
+            document.body.classList.remove('dark', 'light');
+            document.body.classList.add(theme);
+            
+            const btn = document.getElementById('dark-mode');
+            if (btn) {
+                if (theme === 'dark') {
+                    btn.innerHTML = '☀️ Light';
+                    btn.setAttribute('title', 'Switch to light mode');
+                } else {
+                    btn.innerHTML = '🌙 Dark';
+                    btn.setAttribute('title', 'Switch to dark mode');
+                }
+            }
+            
+            updateDebugInfo();
+            
+            try {
+                localStorage.setItem('theme', theme);
+            } catch (e) {}
+        }
+        
+        function bindThemeToggle() {
+            const btn = document.getElementById('dark-mode');
+            if (!btn) {
+                console.log('Button not found');
+                updateDebugInfo();
+                return;
+            }
+            
+            if (btn.hasAttribute('data-theme-bound')) {
+                console.log('Already bound');
+                updateDebugInfo();
+                return;
+            }
+            
+            btn.setAttribute('data-theme-bound', 'true');
+            
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Button clicked');
+                const isDark = document.body.classList.contains('dark');
+                const next = isDark ? 'light' : 'dark';
+                applyTheme(next);
+            });
+            
+            // Keyboard shortcut
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+                    e.preventDefault();
+                    const isDark = document.body.classList.contains('dark');
+                    const next = isDark ? 'light' : 'dark';
+                    applyTheme(next);
+                }
+            });
+            
+            console.log('Theme toggle bound successfully');
+            updateDebugInfo();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            bindThemeToggle();
+            updateDebugInfo();
+        });
+        
+        // Update debug info every second
+        setInterval(updateDebugInfo, 1000);
+    </script>
+</body>
+</html>

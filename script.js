@@ -282,13 +282,22 @@ function applyTheme(theme) {
 }
 
 function initTheme() {
-  let theme = "dark";
+  let theme = "dark"; // Default to dark mode
   try {
     const saved = localStorage.getItem("theme");
-    if (saved) theme = saved;
-    else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = "dark";
-    else theme = "light";
-  } catch (e) {}
+    if (saved) {
+      theme = saved; // Use saved preference if exists
+    } else {
+      // Default to dark mode, but respect system preference if it's explicitly light
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        theme = "light";
+      } else {
+        theme = "dark"; // Default to dark mode
+      }
+    }
+  } catch (e) {
+    theme = "dark"; // Fallback to dark mode on any error
+  }
   applyTheme(theme);
 }
 
