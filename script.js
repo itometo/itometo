@@ -187,20 +187,47 @@ backToTop.addEventListener("click", () => {
 function bindThemeToggle() {
   const btn = document.getElementById("dark-mode");
   if (!btn) return;
+  
+  // Click handler
   btn.addEventListener("click", () => {
     const isDark = document.body.classList.contains("dark");
     const next = isDark ? "light" : "dark";
     applyTheme(next);
-    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
+  
+  // Keyboard shortcut: Ctrl/Cmd + Shift + D
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+      e.preventDefault();
+      const isDark = document.body.classList.contains("dark");
+      const next = isDark ? "light" : "dark";
+      applyTheme(next);
+      
+      // Visual feedback
+      btn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        btn.style.transform = '';
+      }, 150);
+    }
   });
 }
 
 function applyTheme(theme) {
+  // Add animation class
+  document.body.classList.add('theme-changing');
+  
   document.body.classList.remove("dark", "light");
   document.body.classList.add(theme);
   const darkModeBtn = document.getElementById("dark-mode");
   if (darkModeBtn) {
-    darkModeBtn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode";
+    // Better button text with icons
+    if (theme === "dark") {
+      darkModeBtn.innerHTML = "☀️ Light";
+      darkModeBtn.setAttribute("title", "Switch to light mode");
+    } else {
+      darkModeBtn.innerHTML = "🌙 Dark";
+      darkModeBtn.setAttribute("title", "Switch to dark mode");
+    }
     darkModeBtn.setAttribute("aria-pressed", theme === "dark" ? "false" : "true");
   }
   // Update dynamic inline-styled elements to reflect CSS vars
@@ -208,29 +235,27 @@ function applyTheme(theme) {
     const cs = getComputedStyle(document.body);
     const accent = cs.getPropertyValue('--accent-color').trim();
     const bg = cs.getPropertyValue('--bg-color').trim();
-    menuBtn.style.color = accent;
-    menuBtn.style.borderColor = cs.getPropertyValue('--secondary-color').trim() || accent;
+    if (menuBtn) {
+      menuBtn.style.color = accent;
+      menuBtn.style.borderColor = cs.getPropertyValue('--secondary-color').trim() || accent;
+    }
     backToTop.style.color = accent;
     backToTop.style.borderColor = accent;
     backToTop.style.background = bg;
   } catch (e) {}
-  // DEBUG: Show theme in footer
-  try {
-    let indicator = document.getElementById('theme-indicator');
-    if (!indicator) {
-      indicator = document.createElement('span');
-      indicator.id = 'theme-indicator';
-      indicator.style.marginLeft = '1em';
-      indicator.style.fontWeight = 'bold';
-      indicator.style.fontSize = '1em';
-      indicator.style.color = 'var(--accent-color)';
-      const footer = document.querySelector('footer');
-      if (footer) footer.appendChild(indicator);
-    }
-    indicator.textContent = `[Theme: ${theme}]`;
+  
+  // Smooth transition effect
+  document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+  setTimeout(() => {
+    document.body.style.transition = '';
+    document.body.classList.remove('theme-changing');
+  }, 300);
+  
+  // Store theme preference
+  try { 
+    localStorage.setItem("theme", theme); 
+    console.log(`Theme switched to: ${theme}`);
   } catch (e) {}
-  // DEBUG: Log to console
-  console.log('[Theme]', theme, 'body.classList:', document.body.classList.value);
 }
 
 function initTheme() {
@@ -258,8 +283,10 @@ window.addEventListener('partials:loaded', () => {
 document.addEventListener('click', (ev) => {
   const btn = ev.target && ev.target.closest && ev.target.closest('#dark-mode');
   if (!btn) return;
+  // Prevent duplicate handling if the main event listener is working
+  if (btn.hasAttribute('data-handled')) return;
+  
   const isDark = document.body.classList.contains('dark');
   const next = isDark ? 'light' : 'dark';
   applyTheme(next);
-  try { localStorage.setItem('theme', next); } catch (e) {}
 });
