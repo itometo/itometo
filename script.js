@@ -186,12 +186,27 @@ backToTop.addEventListener("click", () => {
 // ================= DARK/LIGHT MODE TOGGLE =================
 function bindThemeToggle() {
   const btn = document.getElementById("dark-mode");
-  if (!btn) return;
+  if (!btn) {
+    console.log("Dark mode button not found, will retry after partials load");
+    return;
+  }
+  
+  // Avoid binding multiple times
+  if (btn.hasAttribute('data-theme-bound')) {
+    console.log("Theme toggle already bound");
+    return;
+  }
+  btn.setAttribute('data-theme-bound', 'true');
+  
+  console.log("Binding theme toggle to button");
   
   // Click handler
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    console.log("Theme toggle clicked");
     const isDark = document.body.classList.contains("dark");
     const next = isDark ? "light" : "dark";
+    console.log(`Switching theme from ${isDark ? 'dark' : 'light'} to ${next}`);
     applyTheme(next);
   });
   
@@ -213,11 +228,16 @@ function bindThemeToggle() {
 }
 
 function applyTheme(theme) {
+  console.log(`Applying theme: ${theme}`);
+  
   // Add animation class
   document.body.classList.add('theme-changing');
   
   document.body.classList.remove("dark", "light");
   document.body.classList.add(theme);
+  
+  console.log(`Body classes after theme change: ${document.body.className}`);
+  
   const darkModeBtn = document.getElementById("dark-mode");
   if (darkModeBtn) {
     // Better button text with icons
@@ -229,6 +249,9 @@ function applyTheme(theme) {
       darkModeBtn.setAttribute("title", "Switch to dark mode");
     }
     darkModeBtn.setAttribute("aria-pressed", theme === "dark" ? "false" : "true");
+    console.log(`Updated button text to: ${darkModeBtn.innerHTML}`);
+  } else {
+    console.log("Dark mode button not found when trying to update it");
   }
   // Update dynamic inline-styled elements to reflect CSS vars
   try {
@@ -269,9 +292,23 @@ function initTheme() {
   applyTheme(theme);
 }
 
+// Initialize theme and try to bind toggle
 initTheme();
-bindThemeToggle();
+
+// Try to bind immediately if DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, trying to bind theme toggle");
+    bindThemeToggle();
+  });
+} else {
+  console.log("DOM already ready, trying to bind theme toggle");
+  bindThemeToggle();
+}
+
+// Re-bind after partials load (this is when nav.html loads)
 window.addEventListener('partials:loaded', () => {
+  console.log("Partials loaded, re-binding theme toggle");
   // Re-bind after nav include
   bindThemeToggle();
   // Also refresh button label to current theme
@@ -279,13 +316,42 @@ window.addEventListener('partials:loaded', () => {
   applyTheme(isDark ? 'dark' : 'light');
 });
 
+// Additional fallback: check for button periodically until found
+let retryCount = 0;
+const maxRetries = 10;
+function retryBindTheme() {
+  const btn = document.getElementById("dark-mode");
+  if (btn && !btn.hasAttribute('data-theme-bound')) {
+    console.log("Found theme button on retry, binding now");
+    bindThemeToggle();
+    return;
+  }
+  
+  retryCount++;
+  if (retryCount < maxRetries) {
+    setTimeout(retryBindTheme, 500);
+  } else {
+    console.log("Max retries reached for theme button binding");
+  }
+}
+
+// Start retry process
+setTimeout(retryBindTheme, 100);
+
 // Delegated click handler as a robust fallback
 document.addEventListener('click', (ev) => {
   const btn = ev.target && ev.target.closest && ev.target.closest('#dark-mode');
   if (!btn) return;
-  // Prevent duplicate handling if the main event listener is working
-  if (btn.hasAttribute('data-handled')) return;
   
+  console.log("Delegated click handler triggered for theme toggle");
+  
+  // Prevent duplicate handling if the main event listener is working
+  if (btn.hasAttribute('data-theme-bound')) {
+    console.log("Main handler should handle this, skipping delegated handler");
+    return;
+  }
+  
+  console.log("Using delegated handler for theme toggle");
   const isDark = document.body.classList.contains('dark');
   const next = isDark ? 'light' : 'dark';
   applyTheme(next);
