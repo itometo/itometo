@@ -186,67 +186,134 @@ backToTop.addEventListener("click", () => {
 // ================= DARK/LIGHT MODE TOGGLE =================
 function bindThemeToggle() {
   const btn = document.getElementById("dark-mode");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
+  if (!btn) {
+    console.log("Dark mode button not found, will retry after partials load");
+    return;
+  }
+  
+  // Avoid binding multiple times
+  if (btn.hasAttribute('data-theme-bound')) {
+    console.log("Theme toggle already bound");
+    return;
+  }
+  btn.setAttribute('data-theme-bound', 'true');
+  
+  console.log("Binding theme toggle to button");
+  
+  // Click handler
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    console.log("Theme toggle clicked");
     const isDark = document.body.classList.contains("dark");
     const next = isDark ? "light" : "dark";
+    console.log(`Switching theme from ${isDark ? 'dark' : 'light'} to ${next}`);
     applyTheme(next);
-    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
+  
+  // Keyboard shortcut: Ctrl/Cmd + Shift + D
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+      e.preventDefault();
+      const isDark = document.body.classList.contains("dark");
+      const next = isDark ? "light" : "dark";
+      applyTheme(next);
+      
+      // Visual feedback
+      btn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        btn.style.transform = '';
+      }, 150);
+    }
   });
 }
 
 function applyTheme(theme) {
+  console.log(`Applying theme: ${theme}`);
+  
+  // Add animation class
+  document.body.classList.add('theme-changing');
+  
   document.body.classList.remove("dark", "light");
   document.body.classList.add(theme);
+  
+  console.log(`Body classes after theme change: ${document.body.className}`);
+  
   const darkModeBtn = document.getElementById("dark-mode");
   if (darkModeBtn) {
-    darkModeBtn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode";
+    // Better button text with icons
+    if (theme === "dark") {
+      darkModeBtn.innerHTML = "☀️ Light";
+      darkModeBtn.setAttribute("title", "Switch to light mode");
+    } else {
+      darkModeBtn.innerHTML = "🌙 Dark";
+      darkModeBtn.setAttribute("title", "Switch to dark mode");
+    }
     darkModeBtn.setAttribute("aria-pressed", theme === "dark" ? "false" : "true");
+    console.log(`Updated button text to: ${darkModeBtn.innerHTML}`);
+  } else {
+    console.log("Dark mode button not found when trying to update it");
   }
   // Update dynamic inline-styled elements to reflect CSS vars
   try {
     const cs = getComputedStyle(document.body);
     const accent = cs.getPropertyValue('--accent-color').trim();
     const bg = cs.getPropertyValue('--bg-color').trim();
-    menuBtn.style.color = accent;
-    menuBtn.style.borderColor = cs.getPropertyValue('--secondary-color').trim() || accent;
+    if (menuBtn) {
+      menuBtn.style.color = accent;
+      menuBtn.style.borderColor = cs.getPropertyValue('--secondary-color').trim() || accent;
+    }
     backToTop.style.color = accent;
     backToTop.style.borderColor = accent;
     backToTop.style.background = bg;
   } catch (e) {}
-  // DEBUG: Show theme in footer
-  try {
-    let indicator = document.getElementById('theme-indicator');
-    if (!indicator) {
-      indicator = document.createElement('span');
-      indicator.id = 'theme-indicator';
-      indicator.style.marginLeft = '1em';
-      indicator.style.fontWeight = 'bold';
-      indicator.style.fontSize = '1em';
-      indicator.style.color = 'var(--accent-color)';
-      const footer = document.querySelector('footer');
-      if (footer) footer.appendChild(indicator);
-    }
-    indicator.textContent = `[Theme: ${theme}]`;
+  
+  // Smooth transition effect
+  document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+  setTimeout(() => {
+    document.body.style.transition = '';
+    document.body.classList.remove('theme-changing');
+  }, 300);
+  
+  // Store theme preference
+  try { 
+    localStorage.setItem("theme", theme); 
+    console.log(`Theme switched to: ${theme}`);
   } catch (e) {}
-  // DEBUG: Log to console
-  console.log('[Theme]', theme, 'body.classList:', document.body.classList.value);
 }
 
 function initTheme() {
-  let theme = "dark";
+  let theme = "dark"; // Always default to dark mode
   try {
     const saved = localStorage.getItem("theme");
-    if (saved) theme = saved;
-    else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = "dark";
-    else theme = "light";
-  } catch (e) {}
+    if (saved) {
+      theme = saved; // Use saved preference if exists
+    } else {
+      // Always default to dark mode, completely ignore system preferences
+      theme = "dark";
+    }
+  } catch (e) {
+    theme = "dark"; // Fallback to dark mode on any error
+  }
   applyTheme(theme);
 }
 
+// Initialize theme and try to bind toggle
 initTheme();
-bindThemeToggle();
+
+// Try to bind immediately if DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM loaded, trying to bind theme toggle");
+    bindThemeToggle();
+  });
+} else {
+  console.log("DOM already ready, trying to bind theme toggle");
+  bindThemeToggle();
+}
+
+// Re-bind after partials load (this is when nav.html loads)
 window.addEventListener('partials:loaded', () => {
+  console.log("Partials loaded, re-binding theme toggle");
   // Re-bind after nav include
   bindThemeToggle();
   // Also refresh button label to current theme
@@ -254,12 +321,43 @@ window.addEventListener('partials:loaded', () => {
   applyTheme(isDark ? 'dark' : 'light');
 });
 
+// Additional fallback: check for button periodically until found
+let retryCount = 0;
+const maxRetries = 10;
+function retryBindTheme() {
+  const btn = document.getElementById("dark-mode");
+  if (btn && !btn.hasAttribute('data-theme-bound')) {
+    console.log("Found theme button on retry, binding now");
+    bindThemeToggle();
+    return;
+  }
+  
+  retryCount++;
+  if (retryCount < maxRetries) {
+    setTimeout(retryBindTheme, 500);
+  } else {
+    console.log("Max retries reached for theme button binding");
+  }
+}
+
+// Start retry process
+setTimeout(retryBindTheme, 100);
+
 // Delegated click handler as a robust fallback
 document.addEventListener('click', (ev) => {
   const btn = ev.target && ev.target.closest && ev.target.closest('#dark-mode');
   if (!btn) return;
+  
+  console.log("Delegated click handler triggered for theme toggle");
+  
+  // Prevent duplicate handling if the main event listener is working
+  if (btn.hasAttribute('data-theme-bound')) {
+    console.log("Main handler should handle this, skipping delegated handler");
+    return;
+  }
+  
+  console.log("Using delegated handler for theme toggle");
   const isDark = document.body.classList.contains('dark');
   const next = isDark ? 'light' : 'dark';
   applyTheme(next);
-  try { localStorage.setItem('theme', next); } catch (e) {}
 });

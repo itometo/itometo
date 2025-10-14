@@ -27,14 +27,21 @@
           '      <img src="'+base+'icon.png" alt="Itometo alien icon" class="logo-mark"/>'+
           '      <span>itoMeto</span>'+
           '    </div>'+
-          '    <nav>'+
+          '    <button id="menu-btn" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle menu">'+
+          '      <span class="hamburger" aria-hidden="true">'+
+          '        <span></span>'+
+          '        <span></span>'+
+          '        <span></span>'+
+          '      </span>'+
+          '    </button>'+
+          '    <nav id="main-nav" aria-label="Primary navigation">'+
           '      <a href="'+base+'index.html#home">Home</a>'+
           '      <a href="'+base+'index.html#logs">Logs</a>'+
           '      <a href="'+base+'index.html#guide">Field Guide</a>'+
           '      <a href="'+base+'index.html#about">Origin</a>'+
           '      <a href="'+base+'index.html#contact">Contact</a>'+
           '    </nav>'+
-          '    <button id="dark-mode" aria-label="Toggle color theme" aria-pressed="false">Light Mode</button>'+
+          '    <button id="dark-mode" aria-label="Toggle color theme" aria-pressed="false" title="Switch to light mode">☀️ Light</button>'+
           '  </header>'
         );
       } else if (src.endsWith('head.html')) {

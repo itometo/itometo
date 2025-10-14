@@ -47,6 +47,17 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease; /* Smooth toggle */
 }
 
+/* Theme change animation */
+body.theme-changing {
+  animation: themeSwitch 0.3s ease-in-out;
+}
+
+@keyframes themeSwitch {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
 /* Slightly larger base paragraph text for better readability across the site */
 p {
   font-size: 1.02rem;
@@ -192,7 +203,32 @@ header nav a:hover {
   cursor: pointer;
   font-size: 0.8rem;
   font-family: var(--mono-font);
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+#dark-mode::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+#dark-mode:hover::before {
+  left: 100%;
+}
+
+#dark-mode:hover {
+  background: var(--accent-color);
+  color: var(--bg-color);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 
